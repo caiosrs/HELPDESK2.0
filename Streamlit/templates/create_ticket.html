@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Chamado</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Novo Chamado</h1>
+    <form method="post" action="{{ url_for('create_ticket') }}">
+        <label for="title">Título:</label><br>
+        <input type="text" id="title" name="title"><br>
+        <label for="description">Descrição:</label><br>
+        <textarea id="description" name="description"></textarea><br>
+        <button type="submit">Enviar Chamado</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpDesk</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Chamados</h1>
+    <ul>
+        {% for ticket in tickets %}
+        <li>{{ ticket.title }}</li>
+        <p>{{ ticket.description }}</p>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('create_ticket') }}">Criar Novo Chamado</a>
+</body>
+</html>
