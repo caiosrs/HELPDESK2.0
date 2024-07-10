@@ -1,0 +1,75 @@
+{% extends 'tickets/base.html' %}
+
+{% block title %}Lista de Chamados{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="padding: 20px;">
+    <h1>Chamados</h1>
+
+    {% if not is_admin %}
+    <a href="{% url 'ticket_create' %}" class="btn btn-primary">Abrir Chamado</a>
+    {% endif %}
+
+    <ul class="list-group mt-3">
+        {% for ticket in tickets %}
+        <li class="list-group-item">
+            <strong>{{ ticket.get_category_display }}</strong> - {{ ticket.description }} - {{ ticket.created_at|date:"d/m/Y H:i" }}
+            {% if ticket.status == 'respondido' %}
+                <span class="badge bg-success">Respondido</span>
+            {% elif ticket.status == 'aberto' %}
+                <span class="badge bg-warning text-dark">Aberto</span>
+            {% endif %}
+            {% if is_admin %}
+            <div class="mt-2">
+                <p>Aberto por: {{ ticket.opened_by }}</p>
+                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalTicket{{ ticket.id }}">Responder Chamado</button>
+                <a href="{% url 'ticket_delete' ticket.id %}" class="btn btn-sm btn-danger">Excluir Chamado</a>
+            </div>
+            {% else %}
+            {% if ticket.has_response %}
+            <div class="mt-2">
+                <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#modalTicket{{ ticket.id }}">Ver Resposta</button>
+            </div>
+            {% endif %}
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% for ticket in tickets %}
+<!-- ticket_responder_modal.html -->
+<div class="modal fade" id="modalTicket{{ ticket.id }}" tabindex="-1" aria-labelledby="modalTicketLabel{{ ticket.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTicketLabel{{ ticket.id }}">Detalhes do Chamado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Categoria:</strong> {{ ticket.get_category_display }}</p>
+                <p><strong>AnyDesk ID:</strong> {{ ticket.anydesk_id }}</p>
+                <p><strong>Descrição:</strong> {{ ticket.description }}</p>
+                <p><strong>Status:</strong> {{ ticket.get_status_display }}</p>
+                <p><strong>Aberto por:</strong> {{ ticket.opened_by }}</p>
+
+                {% if ticket.status == 'aberto' %}
+                <form action="{% url 'ticket_responder' ticket.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="response">Responder:</label>
+                        <textarea class="form-control" id="response" name="response" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enviar Resposta</button>
+                </form>
+                {% else %}
+                <p><em>Este chamado já foi respondido.</em></p>
+                <p><strong>Resposta:</strong> {{ ticket.response }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

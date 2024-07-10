@@ -1,0 +1,17 @@
+<!-- Em settings.html -->
+
+{% extends 'tickets/base.html' %}
+{% block title %}Configurações{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Configurações</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+</div>
+{% endblock %}
+
+ajustes no login e criação da página 'settings'
